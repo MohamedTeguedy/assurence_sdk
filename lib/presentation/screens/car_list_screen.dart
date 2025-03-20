@@ -5,6 +5,8 @@ import 'package:assurence_sdk/data/services/service_data_local.dart';
 class CarListScreen extends StatelessWidget {
   final _dbHelper = CarService();
 
+  CarListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

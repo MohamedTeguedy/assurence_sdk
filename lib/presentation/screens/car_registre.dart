@@ -1,15 +1,15 @@
-import 'dart:convert';
 import 'package:assurence_sdk/data/models/assureur_model.dart';
 import 'package:assurence_sdk/data/models/car_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../business_logic/cubits/car_cubit.dart';
+
 import '../../data/services/service_data_local.dart';
-import 'car_list_screen.dart';
-import 'confirmation_page.dart';
+import '../../route.dart';
+
+import 'confirmation_aguments.dart';
 
 class CarRegistrationPage extends StatefulWidget {
-  const CarRegistrationPage({super.key, required Assureur assureur});
+  const CarRegistrationPage({super.key, required this.assureur});
+  final Assureur assureur;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -295,11 +295,18 @@ class _CarRegistrationPageState extends State<CarRegistrationPage> {
       // Ajouter la voiture via le Cubit
 
       // Naviguer vers la page de liste des voitures
-      Navigator.push(
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => ConfirmationPage(car: car),
+      //   ),
+      // );
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (context) => ConfirmationPage(car: car),
-        ),
+        AppRoutes.confirmation,
+        arguments: ConfirmationArguments(
+            car: car,
+            assureur: widget.assureur), // Passer l'objet Car comme argument
       );
 
       // Réinitialiser le formulaire

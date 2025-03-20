@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/assureur_model.dart';
 import '../../data/services/assureur_service.dart';
-import 'car_registre.dart';
+import '../../route.dart';
 
 class AssureurListScreen extends StatefulWidget {
   const AssureurListScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AssureurListScreenState createState() => _AssureurListScreenState();
 }
 
@@ -56,12 +57,17 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
                     borderRadius: BorderRadius.circular(10),
                     onTap: () {
                       // Naviguer vers la page de saisie des données de la voiture
-                      Navigator.push(
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         CarRegistrationPage(assureur: assureur),
+                      //   ),
+                      // );
+                      Navigator.pushReplacementNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              CarRegistrationPage(assureur: assureur),
-                        ),
+                        AppRoutes.carRegistration,
+                        arguments: assureur,
                       );
                     },
                     child: Padding(

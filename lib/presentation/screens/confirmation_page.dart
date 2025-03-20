@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:assurence_sdk/data/models/car_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../business_logic/cubits/car_cubit.dart';
-import 'car_list_screen.dart';
+import '../../data/models/assureur_model.dart';
+import '../../route.dart';
 
 class ConfirmationPage extends StatelessWidget {
   final Car car;
 
-  const ConfirmationPage({super.key, required this.car});
+  final Assureur assureur;
+
+  const ConfirmationPage(
+      {super.key, required this.car, required this.assureur});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +50,8 @@ class ConfirmationPage extends StatelessWidget {
                               color: Colors.blue,
                             ),
                           ),
+                          Text('Assureur: ${assureur.nom}',
+                              style: const TextStyle(fontSize: 16)),
                           const SizedBox(height: 16),
                           _buildInfoRow(
                               Icons.confirmation_number, 'VIN', car.vin),
@@ -98,11 +104,15 @@ class ConfirmationPage extends StatelessWidget {
                         onPressed: () {
                           // Valider les données et naviguer vers la liste des voitures
                           context.read<CarCubit>().addCar(car);
-                          Navigator.pushReplacement(
+                          // Navigator.pushReplacement(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => CarListScreen(),
+                          //   ),
+                          // );
+                          Navigator.pushReplacementNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => CarListScreen(),
-                            ),
+                            AppRoutes.carList,
                           );
                         },
                         style: ElevatedButton.styleFrom(
