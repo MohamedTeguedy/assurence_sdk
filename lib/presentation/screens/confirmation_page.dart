@@ -104,12 +104,7 @@ class ConfirmationPage extends StatelessWidget {
                         onPressed: () {
                           // Valider les données et naviguer vers la liste des voitures
                           context.read<CarCubit>().addCar(car);
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => CarListScreen(),
-                          //   ),
-                          // );
+
                           Navigator.pushReplacementNamed(
                             context,
                             AppRoutes.carList,

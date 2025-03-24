@@ -10,7 +10,7 @@ class Car {
   final String puissance;
   final int nbrePlace;
   final List<String> typesCouverture;
-  final String duree;
+  late final String duree;
 
   Car({
     this.id,
