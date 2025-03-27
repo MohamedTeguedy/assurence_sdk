@@ -1,9 +1,15 @@
+import 'package:assurence_sdk/utils/confirmation_aguments.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Pour FilteringTextInputFormatter
-import 'package:assurence_sdk/data/models/assureur_model.dart';
-import 'package:assurence_sdk/data/models/car_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+
+import 'package:assurence_sdk/business_logic/cubits/car_cubit.dart';
+
+import '../../data/models/assureur_model.dart';
+import '../../data/models/car_model.dart';
+import '../../data/models/form_data_model.dart';
 import '../../route.dart';
-import 'confirmation_aguments.dart';
+import '../../utils/text_utils.dart';
 
 class CarRegistrationPage extends StatefulWidget {
   const CarRegistrationPage({super.key, required this.assureur});
@@ -15,8 +21,6 @@ class CarRegistrationPage extends StatefulWidget {
 
 class CarRegistrationPageState extends State<CarRegistrationPage> {
   final _formKey = GlobalKey<FormState>();
-
-  // Contrôleurs pour les champs de formulaire
   final TextEditingController _vinController = TextEditingController();
   final TextEditingController _matriculeController = TextEditingController();
   final TextEditingController _anneeController = TextEditingController();
@@ -25,32 +29,17 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
   final TextEditingController _nbrePlaceController = TextEditingController();
   final TextEditingController _dureeController = TextEditingController();
 
-  String? _marque;
-  String? _modele;
-  String? _usage;
-  String? _puissance;
-  List<String> _typesCouverture = ['RESPONSABILITE_CIVILE']; // Toujours cochée
+  Marque? _selectedMarque;
+  Modele? _selectedModele;
+  Usage? _selectedUsage;
+  List<Couverture> _selectedCouvertures = [];
+  List<Couverture> _allCouvertures = [];
 
-  final List<String> _usages = ['A01', 'A02', 'A03'];
-  final List<String> _couvertureOptions = [
-    'RESPONSABILITE_CIVILE',
-    'DOMMAGES_VEHICULE',
-    'VOL',
-  ];
-
-  final Map<String, Map<String, List<String>>> _marqueModelesPuissance = {
-    'Toyota': {
-      'modèles': ['Corolla', 'Prado', 'RAV4'],
-      'puissances': ['11CV', '12CV', '15CV'],
-    },
-    'Hyundai': {
-      'modèles': ['Tucson', 'Santa Fe', 'Elantra'],
-      'puissances': ['10CV', '13CV', '16CV'],
-    },
-  };
-
-  List<String> _modelesDisponibles = [];
-  List<String> _puissancesDisponibles = [];
+  @override
+  void initState() {
+    super.initState();
+    context.read<CarCubit>().loadAllData();
+  }
 
   @override
   void dispose() {
@@ -67,347 +56,278 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ajouter info voiture et garentie'),
-        centerTitle: true,
-        backgroundColor: Colors.blue, // Couleur de l'app bar
+        title: const Text('Enregistrement Véhicule'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, AppRoutes.listAssureur),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      _buildTextField(
-                        label: 'VIN',
-                        controller: _vinController,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer le VIN'
-                            : null,
-                        icon: Icons.confirmation_number,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        label: 'Matricule',
-                        controller: _matriculeController,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer le matricule'
-                            : null,
-                        icon: Icons.directions_car,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      _buildDropdown(
-                        value: _marque,
-                        label: 'Marque',
-                        items: _marqueModelesPuissance.keys.toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _marque = value;
-                            _modelesDisponibles = _marqueModelesPuissance[value]
-                                    ?['modèles'] ??
-                                [];
-                            _puissancesDisponibles =
-                                _marqueModelesPuissance[value]?['puissances'] ??
-                                    [];
-                            _modele = null;
-                            _puissance = null;
-                          });
-                        },
-                        icon: Icons.branding_watermark,
-                      ),
-                      if (_marque != null) ...[
-                        const SizedBox(height: 16),
-                        _buildDropdown(
-                          value: _modele,
-                          label: 'Modèle',
-                          items: _modelesDisponibles,
-                          onChanged: (value) {
-                            setState(() {
-                              _modele = value;
-                            });
-                          },
-                          icon: Icons.model_training,
-                        ),
-                      ],
-                      if (_marque != null) ...[
-                        const SizedBox(height: 16),
-                        _buildDropdown(
-                          value: _puissance,
-                          label: 'Puissance',
-                          items: _puissancesDisponibles,
-                          onChanged: (value) {
-                            setState(() {
-                              _puissance = value;
-                            });
-                          },
-                          icon: Icons.speed,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      _buildTextField(
-                        label: 'Année',
-                        controller: _anneeController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer l\'année'
-                            : null,
-                        icon: Icons.calendar_today,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        label: 'Nom du propriétaire',
-                        controller: _nomProprietaireController,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer le nom du propriétaire'
-                            : null,
-                        icon: Icons.person,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildDropdown(
-                        value: _usage,
-                        label: 'Usage',
-                        items: _usages,
-                        onChanged: (value) {
-                          setState(() {
-                            _usage = value;
-                          });
-                        },
-                        icon: Icons.assignment,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildTextField(
-                        label: 'Nombre de places',
-                        controller: _nbrePlaceController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Veuillez entrer le nombre de places'
-                            : null,
-                        icon: Icons.airline_seat_recline_normal,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Types de couverture',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      ..._buildCouvertureCheckboxes(),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Période de couverture (1-12 mois)',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _dureeController,
-                        decoration: InputDecoration(
-                          labelText: 'Durée (mois)',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          prefixIcon: const Icon(Icons.date_range),
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(2),
-                        ],
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Veuillez entrer une durée';
-                          }
-                          final intValue = int.tryParse(value);
-                          if (intValue == null ||
-                              intValue < 1 ||
-                              intValue > 12) {
-                            return 'La durée doit être entre 1 et 12';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _saveCar,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Suivant',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
-          ),
+      body: BlocConsumer<CarCubit, CarState>(
+        listener: (context, state) {
+          if (state is CarError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is CarLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is CarDataLoaded) {
+            _allCouvertures = state.couvertures;
+            if (_selectedCouvertures.isEmpty) {
+              _selectedCouvertures = _allCouvertures
+                  .where((c) => c.type == 'RESPONSABILITE_CIVILE')
+                  .toList();
+            }
+            return _buildForm(state);
+          }
+
+          return const Center(child: Text('Chargement des données...'));
+        },
+      ),
+    );
+  }
+
+  Widget _buildForm(CarDataLoaded state) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            _buildTextField('VIN', _vinController, Icons.confirmation_number),
+            const SizedBox(height: 16),
+            _buildTextField(
+                'Matricule', _matriculeController, Icons.directions_car),
+            const SizedBox(height: 16),
+
+            // Sélection de la marque
+            _buildMarqueDropdown(state.marques),
+            const SizedBox(height: 16),
+
+            // Sélection du modèle (si marque sélectionnée et modèles disponibles)
+            if (_selectedMarque != null && state.modeles != null)
+              _buildModeleDropdown(state.modeles!),
+            const SizedBox(height: 16),
+
+            _buildTextField('Année', _anneeController, Icons.calendar_today,
+                keyboardType: TextInputType.number),
+            const SizedBox(height: 16),
+            _buildTextField(
+                'Propriétaire', _nomProprietaireController, Icons.person),
+            const SizedBox(height: 16),
+
+            // Sélection de l'usage
+            _buildUsageDropdown(state.usages),
+            const SizedBox(height: 16),
+
+            _buildTextField('Nombre de places', _nbrePlaceController,
+                Icons.airline_seat_recline_normal,
+                keyboardType: TextInputType.number),
+            const SizedBox(height: 16),
+
+            // Sélection des couvertures
+            _buildCouverturesSection(),
+            const SizedBox(height: 16),
+
+            // Durée de couverture
+            _buildDureeField(),
+            const SizedBox(height: 24),
+
+            // Bouton de soumission
+            ElevatedButton(
+              onPressed: _submitForm,
+              child: const Text('Enregistrer'),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required FormFieldValidator<String> validator,
-    IconData? icon,
-    TextInputType? keyboardType,
-  }) {
+  // ... (Les méthodes _buildTextField, _buildMarqueDropdown, _buildModeleDropdown,
+  // _buildUsageDropdown, _buildCouverturesSection, _buildDureeField restent identiques
+  // à l'implémentation précédente montrée plus haut)
+
+  Widget _buildTextField(
+      String label, TextEditingController controller, IconData icon,
+      {TextInputType? keyboardType}) {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: icon != null ? Icon(icon) : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+        prefixIcon: Icon(icon),
+        border: const OutlineInputBorder(),
       ),
-      validator: validator,
       keyboardType: keyboardType,
+      validator: (value) =>
+          value?.isEmpty ?? true ? 'Ce champ est obligatoire' : null,
     );
   }
 
-  Widget _buildDropdown({
-    required String? value,
-    required String label,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-    IconData? icon,
-  }) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: icon != null ? Icon(icon) : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
+  Widget _buildMarqueDropdown(List<Marque> marques) {
+    return DropdownButtonFormField<Marque>(
+      value: _selectedMarque,
+      decoration: const InputDecoration(
+        labelText: 'Marque',
+        border: OutlineInputBorder(),
       ),
-      items: items.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item),
-        );
-      }).toList(),
-      onChanged: onChanged,
+      items: marques
+          .map((marque) => DropdownMenuItem(
+                value: marque,
+                child: Text(marque.nom),
+              ))
+          .toList(),
+      onChanged: (Marque? marque) async {
+        if (marque != null) {
+          setState(() {
+            _selectedMarque = marque;
+            _selectedModele = null;
+          });
+          await context.read<CarCubit>().loadModelesByMarque(marque.id);
+        }
+      },
+      validator: (value) => value == null ? 'Sélectionnez une marque' : null,
     );
   }
 
-  List<Widget> _buildCouvertureCheckboxes() {
-    return _couvertureOptions.map((option) {
-      return CheckboxListTile(
-        title: Text(
-          option,
-          style: const TextStyle(fontSize: 16),
-        ),
-        value: _typesCouverture.contains(option),
-        onChanged: option == 'RESPONSABILITE_CIVILE'
-            ? null // Désactive la case à cocher
-            : (bool? value) {
-                setState(() {
-                  if (value == true) {
-                    _typesCouverture.add(option);
-                  } else {
-                    _typesCouverture.remove(option);
-                  }
-                });
-              },
-        activeColor: Colors.blue.shade800,
-        checkColor: Colors.white,
-        tileColor: Colors.grey.shade100,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-      );
-    }).toList();
+  Widget _buildModeleDropdown(List<Modele> list) {
+    return BlocBuilder<CarCubit, CarState>(
+      builder: (context, state) {
+        if (state is CarDataLoaded) {
+          return _buildModeleDropdownWithModeles(state.modeles ?? []);
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 
-  void _saveCar() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+  Widget _buildModeleDropdownWithModeles(List<Modele> modeles) {
+    return DropdownButtonFormField<Modele>(
+      value: _selectedModele,
+      decoration: const InputDecoration(
+        labelText: 'Modèle',
+        border: OutlineInputBorder(),
+      ),
+      items: modeles
+          .map((modele) => DropdownMenuItem(
+                value: modele,
+                child: Text(modele.nom),
+              ))
+          .toList(),
+      onChanged: (Modele? modele) {
+        setState(() => _selectedModele = modele);
+      },
+      validator: (value) => value == null ? 'Sélectionnez un modèle' : null,
+    );
+  }
 
+  Widget _buildUsageDropdown(List<Usage> usages) {
+    return DropdownButtonFormField<Usage>(
+      value: _selectedUsage,
+      decoration: const InputDecoration(
+        labelText: 'Usage',
+        border: OutlineInputBorder(),
+      ),
+      items: usages
+          .map((usage) => DropdownMenuItem(
+                value: usage,
+                child: Text(_mapUsageCode(usage.code)),
+              ))
+          .toList(),
+      onChanged: (Usage? usage) {
+        setState(() => _selectedUsage = usage);
+      },
+      validator: (value) => value == null ? 'Sélectionnez un usage' : null,
+    );
+  }
+
+  String _mapUsageCode(String code) {
+    switch (code) {
+      case 'A01':
+        return 'Personnel';
+      case 'A02':
+        return 'Transport';
+      case 'A03':
+        return 'Professionnel';
+      case 'A04':
+        return 'Autre';
+      default:
+        return code;
+    }
+  }
+
+  Widget _buildCouverturesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Couvertures',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ..._allCouvertures
+            .map((couverture) => CheckboxListTile(
+                  // title: Text(couverture.typeDisplay),
+                  title: Text(cleanFrenchText(couverture.typeDisplay)),
+                  subtitle: Text(couverture.description),
+                  value: _selectedCouvertures.contains(couverture),
+                  onChanged: couverture.type == 'RESPONSABILITE_CIVILE'
+                      ? null
+                      : (bool? selected) {
+                          setState(() {
+                            if (selected == true) {
+                              _selectedCouvertures.add(couverture);
+                            } else {
+                              _selectedCouvertures.remove(couverture);
+                            }
+                          });
+                        },
+                ))
+            .toList(),
+      ],
+    );
+  }
+
+  Widget _buildDureeField() {
+    return TextFormField(
+      controller: _dureeController,
+      decoration: const InputDecoration(
+        labelText: 'Durée (mois)',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.date_range),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(2),
+      ],
+      validator: (value) {
+        if (value == null || value.isEmpty) return 'Entrez une durée';
+        final duree = int.tryParse(value);
+        if (duree == null || duree < 1 || duree > 12) {
+          return 'Entre 1 et 12 mois';
+        }
+        return null;
+      },
+    );
+  }
+
+  void _submitForm() async {
+    if (_formKey.currentState?.validate() ?? false) {
       final car = Car(
         vin: _vinController.text,
         matricule: _matriculeController.text,
-        marque: _marque!,
-        modele: _modele!,
+        marque: _selectedMarque!.nom,
+        modele: _selectedModele!.nom,
         annee: int.tryParse(_anneeController.text) ?? 0,
         nomProprietaire: _nomProprietaireController.text,
-        usage: _usage!,
-        puissance: _puissance!,
+        usage: _selectedUsage!.code,
         nbrePlace: int.tryParse(_nbrePlaceController.text) ?? 0,
-        typesCouverture: _typesCouverture,
+        typesCouverture: _selectedCouvertures.map((c) => c.type).toList(),
         duree: _dureeController.text,
+        puissance: '',
       );
 
       Navigator.pushNamed(
@@ -418,20 +338,23 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
           assureur: widget.assureur,
         ),
       );
-
-      _vinController.clear();
-      _matriculeController.clear();
-      _anneeController.clear();
-      _nomProprietaireController.clear();
-      _nbrePlaceController.clear();
-      _dureeController.clear();
-      setState(() {
-        _marque = null;
-        _modele = null;
-        _usage = null;
-        _puissance = null;
-        _typesCouverture = ['RESPONSABILITE_CIVILE']; // Réinitialiser
-      });
     }
   }
 }
+
+// String _cleanFrenchText(String input) {
+//   return input
+//       .replaceAll('Ã©', 'é')
+//       .replaceAll('Ã¨', 'è')
+//       .replaceAll('Ãª', 'ê')
+//       .replaceAll('Ã¹', 'ù')
+//       .replaceAll('Ã¢', 'â')
+//       .replaceAll('Ã®', 'î')
+//       .replaceAll('Ã´', 'ô')
+//       .replaceAll('Ã§', 'ç')
+//       .replaceAll('Ãª', 'ê');
+// }
+
+
+
+

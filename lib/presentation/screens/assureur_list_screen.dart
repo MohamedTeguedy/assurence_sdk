@@ -56,14 +56,6 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
                     onTap: () {
-                      // Naviguer vers la page de saisie des données de la voiture
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) =>
-                      //         CarRegistrationPage(assureur: assureur),
-                      //   ),
-                      // );
                       Navigator.pushReplacementNamed(
                         context,
                         AppRoutes.carRegistration,

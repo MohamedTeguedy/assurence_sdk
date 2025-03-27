@@ -1,7 +1,7 @@
 import 'package:assurence_sdk/data/models/assureur_model.dart';
 import 'package:assurence_sdk/presentation/screens/assureur_list_screen.dart';
 import 'package:assurence_sdk/presentation/screens/car_registre.dart';
-import 'package:assurence_sdk/presentation/screens/confirmation_aguments.dart';
+import 'package:assurence_sdk/utils/confirmation_aguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,6 +15,7 @@ import 'data/services/assureur_service.dart';
 class AppRoutes {
   // Nom des routes
   static const String carRegistration = '/car-registration';
+
   static const String carList = '/car-list';
   static const String confirmation = '/confirmation';
   static const String listAssureur = '/list-assureur';

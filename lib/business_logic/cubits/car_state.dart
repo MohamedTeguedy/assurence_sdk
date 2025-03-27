@@ -13,6 +13,28 @@ class CarLoaded extends CarState {
   CarLoaded({required this.cars});
 }
 
+class CarAddedSuccessfully extends CarState {}
+
+class CarDataLoaded extends CarState {
+  final List<Marque> marques;
+  final List<Usage> usages;
+  final List<Couverture> couvertures;
+  final List<Modele>? modeles;
+
+  CarDataLoaded({
+    required this.marques,
+    required this.usages,
+    required this.couvertures,
+    this.modeles,
+  });
+}
+
+// class ModelesLoaded extends CarState {
+//   final List<Modele> modeles;
+
+//   ModelesLoaded(this.modeles);
+// }
+
 class CarError extends CarState {
   final String message;
 

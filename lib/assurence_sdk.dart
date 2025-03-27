@@ -12,22 +12,11 @@ class AssurenceSdk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   title: 'Enregistrement de Voiture',
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: BlocProvider(
-    //     create: (context) => CarCubit(),
-    //     child: AssureurListScreen(),
-    //   ),
-    // );
-
-    var assureur;
     return MaterialApp(
       title: 'Enregistrement de Voiture',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
       ),
       // Utiliser les routes définies dans AppRoutes
       onGenerateRoute: AppRoutes.generateRoute,
