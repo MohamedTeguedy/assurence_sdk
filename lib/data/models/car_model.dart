@@ -11,6 +11,8 @@ class Car {
   final int nbrePlace;
   final List<String> typesCouverture;
   late final String duree;
+  final String dateDebut;
+  final String dateFin;
 
   Car({
     this.id,
@@ -25,6 +27,8 @@ class Car {
     required this.nbrePlace,
     required this.typesCouverture,
     required this.duree,
+    required this.dateDebut,
+    required this.dateFin,
   });
 
   // Convertir un objet Car en Map (pour la base de données)
@@ -42,6 +46,8 @@ class Car {
       'nbre_place': nbrePlace,
       'types_couverture': typesCouverture.join(','),
       'durée': duree,
+      "date_debut": dateDebut,
+      "date_fin": dateFin,
     };
   }
 
@@ -60,6 +66,8 @@ class Car {
       nbrePlace: map['nbre_place'],
       typesCouverture: (map['types_couverture'] as String).split(','),
       duree: map['durée'],
+      dateDebut: map['date_debut'],
+      dateFin: map['date_fin'],
     );
   }
 
@@ -68,4 +76,38 @@ class Car {
 
   // Convertir un JSON en objet Car
   factory Car.fromJson(Map<String, dynamic> json) => Car.fromMap(json);
+
+  Car copyWith({
+    int? id,
+    String? vin,
+    String? matricule,
+    String? marque,
+    String? modele,
+    int? annee,
+    String? nomProprietaire,
+    String? usage,
+    String? puissance,
+    int? nbrePlace,
+    List<String>? typesCouverture,
+    String? duree,
+    String? dateDebut,
+    String? dateFin,
+  }) {
+    return Car(
+      id: id ?? this.id,
+      vin: vin ?? this.vin,
+      matricule: matricule ?? this.matricule,
+      marque: marque ?? this.marque,
+      modele: modele ?? this.modele,
+      annee: annee ?? this.annee,
+      nomProprietaire: nomProprietaire ?? this.nomProprietaire,
+      usage: usage ?? this.usage,
+      puissance: puissance ?? this.puissance,
+      nbrePlace: nbrePlace ?? this.nbrePlace,
+      typesCouverture: typesCouverture ?? this.typesCouverture,
+      duree: duree ?? this.duree,
+      dateDebut: dateDebut ?? this.dateDebut,
+      dateFin: dateFin ?? this.dateFin,
+    );
+  }
 }

@@ -16,7 +16,10 @@ class AssurenceSdk extends StatelessWidget {
       title: 'Enregistrement de Voiture',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Roboto',
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(fontFamily: 'Roboto'),
+          titleMedium: TextStyle(fontFamily: 'Roboto'),
+        ),
       ),
       // Utiliser les routes définies dans AppRoutes
       onGenerateRoute: AppRoutes.generateRoute,

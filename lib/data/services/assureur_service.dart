@@ -7,7 +7,7 @@ class AssureurService {
     return [
       Assureur(
         id: 1,
-        nom: 'Assureur A',
+        nom: 'mar',
         description: 'Description A',
         imageUrl:
             'https://logodix.com/logo/1931259.png', // Remplacez par une URL réelle

@@ -57,12 +57,10 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (context) => CarCubit(),
-            child: AssureurListScreen(),
+            child: const AssureurListScreen(),
           ),
         );
       case confirmation:
-        // final car = settings.arguments as Car; // Récupérer les arguments
-        // final assureur = settings.arguments as Assureur;
         final wrapper = settings.arguments as ConfirmationArguments;
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

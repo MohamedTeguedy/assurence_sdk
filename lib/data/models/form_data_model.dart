@@ -102,3 +102,19 @@ class Modele {
     return 'Modele{id: $id, nom: "$nom", marque: "$marqueNom" (ID: $marqueId)}';
   }
 }
+
+List<String> get puissancesDisponibles => [
+      '4',
+      '5',
+      '6 CV',
+      '7 CV',
+      '8 CV',
+      '9 CV',
+      '10',
+      '11 CV',
+      '12 CV',
+      '13 CV',
+      '14 CV',
+      '15 CV',
+      '16 CV et plus'
+    ];

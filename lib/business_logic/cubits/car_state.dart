@@ -13,7 +13,15 @@ class CarLoaded extends CarState {
   CarLoaded({required this.cars});
 }
 
-class CarAddedSuccessfully extends CarState {}
+// class CarAddedSuccessfully extends CarState {
+//   final Map<String, dynamic> responseData;
+//   CarAddedSuccessfully(Car newCar, Assureur assureur, this.responseData);
+// }
+
+class CarAddedSuccessfully extends CarState {
+  final Map<String, dynamic> response;
+  CarAddedSuccessfully(this.response);
+}
 
 class CarDataLoaded extends CarState {
   final List<Marque> marques;
