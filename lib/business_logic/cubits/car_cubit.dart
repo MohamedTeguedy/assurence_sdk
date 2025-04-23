@@ -17,30 +17,6 @@ class CarCubit extends Cubit<CarState> {
 
   CarCubit() : super(CarInitial());
 
-  void loadCars() async {
-    final cars = await _carRepository.getAllCars();
-    emit(CarLoaded(cars: cars));
-  }
-
-  // Future<Map<String, dynamic>> addCar(Car car, Assureur assureur) async {
-  //   emit(CarLoading());
-  //   try {
-  //     final response = await _carRepository.addCar(car, assureur);
-  //     if (response.statusCode == 200) {
-  //       final responseData = json.decode(response.body);
-
-  //       emit(CarAddedSuccessfully(car, assureur, responseData));
-  //       return responseData;
-  //     } else {
-  //       emit(CarError('Failed to add car:'));
-  //       throw Exception('Failed to add car: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     emit(CarError('Failed to add car: $e'));
-  //     throw Exception('Failed to add car: $e');
-  //   }
-  // }
-
   Future<void> addCar(Car car, Assureur assureur) async {
     emit(CarLoading());
     try {

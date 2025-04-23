@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:assurence_sdk/business_logic/cubits/car_cubit.dart';
 
-import 'package:assurence_sdk/presentation/screens/car_list_screen.dart';
 import 'package:assurence_sdk/presentation/screens/confirmation_page.dart';
 
 import 'data/services/assureur_service.dart';
@@ -46,13 +45,7 @@ class AppRoutes {
                 assureur: assureur), // Passer l'assureur à la page
           ),
         );
-      case carList:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (context) => CarCubit(),
-            child: CarListScreen(),
-          ),
-        );
+
       case listAssureur:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(

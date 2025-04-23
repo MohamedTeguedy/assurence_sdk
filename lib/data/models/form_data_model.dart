@@ -106,15 +106,15 @@ class Modele {
 List<String> get puissancesDisponibles => [
       '4',
       '5',
-      '6 CV',
-      '7 CV',
-      '8 CV',
-      '9 CV',
+      '6',
+      '7',
+      '8',
+      '9',
       '10',
-      '11 CV',
-      '12 CV',
-      '13 CV',
-      '14 CV',
-      '15 CV',
-      '16 CV et plus'
+      '11',
+      '12',
+      '13',
+      '14',
+      '15',
+      '16 et plus'
     ];
