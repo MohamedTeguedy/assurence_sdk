@@ -10,7 +10,7 @@ class Car {
   final String puissance;
   final int nbrePlace;
   final List<String> typesCouverture;
-  late final String duree;
+  final String duree;
   final String dateDebut;
   final String dateFin;
 

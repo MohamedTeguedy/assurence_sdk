@@ -31,8 +31,21 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
   Modele? _selectedModele;
   Usage? _selectedUsage;
   List<Couverture> _selectedCouvertures = [];
-  List<Couverture> _allCouvertures = [];
   String? _selectedPuissance;
+  List<Couverture> _allCouvertures = [];
+  // String? _selectedPuissance;
+
+  // Dans CarRegistrationPageState
+
+  List<String> get puissancesDisponibles {
+    if (_selectedUsage == null) return [];
+    return _selectedUsage!.puissances.map((p) => '$p').toList();
+  }
+
+  List<String> get placesDisponibles {
+    if (_selectedUsage == null) return [];
+    return _selectedUsage!.places.map((p) => '$p places').toList();
+  }
 
   @override
   void initState() {
@@ -155,12 +168,14 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
             _buildUsageDropdown(state.usages),
             const SizedBox(height: 20),
 
-            _buildTextField('Nombre de places', _nbrePlaceController,
-                Icons.airline_seat_recline_normal,
-                keyboardType: TextInputType.number),
+            // _buildTextField('Nombre de places', _nbrePlaceController,
+            //     Icons.airline_seat_recline_normal,
+            //     keyboardType: TextInputType.number),
+            if (_selectedUsage != null) _buildNbrePlaceDropdown(),
             const SizedBox(height: 20),
 
-            _buildPuissanceDropdown(),
+            // _buildPuissanceDropdown(),
+            if (_selectedUsage != null) _buildPuissanceDropdown(),
             const SizedBox(height: 20),
 
             // Section des couvertures
@@ -244,6 +259,7 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
     );
   }
 
+////////////////////////////////////////////
   Widget _buildMarqueDropdown(List<Marque> marques) {
     return InputDecorator(
       decoration: InputDecoration(
@@ -337,21 +353,17 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-        prefixIcon: Icon(Icons.speed, color: Colors.blueGrey[600]),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _selectedPuissance,
           isExpanded: true,
-          style: Theme.of(context).textTheme.bodyLarge,
-          dropdownColor: Colors.white,
-          icon: Icon(Icons.arrow_drop_down, color: Colors.blueGrey[600]),
-          items: puissances
-              .map((puissance) => DropdownMenuItem(
-                    value: puissance,
-                    child: Text(puissance),
-                  ))
-              .toList(),
+          items: puissances.map((puissance) {
+            return DropdownMenuItem<String>(
+              value: puissance,
+              child: Text(puissance),
+            );
+          }).toList(),
           onChanged: (String? newValue) {
             setState(() {
               _selectedPuissance = newValue;
@@ -368,6 +380,129 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
     );
   }
 
+  // Widget _buildPuissanceDropdown() {
+  //   final puissances = puissancesDisponibles;
+
+  //   return InputDecorator(
+  //     decoration: InputDecoration(
+  //       labelText: 'Puissance fiscale',
+  //       labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //             color: Colors.grey[600],
+  //           ),
+  //       border: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(8),
+  //         borderSide: BorderSide(color: Colors.grey[400]!),
+  //       ),
+  //       enabledBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(8),
+  //         borderSide: BorderSide(color: Colors.grey[400]!),
+  //       ),
+  //       focusedBorder: OutlineInputBorder(
+  //         borderRadius: BorderRadius.circular(8),
+  //         borderSide: BorderSide(
+  //           color: Theme.of(context).primaryColor,
+  //           width: 2,
+  //         ),
+  //       ),
+  //       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+  //       prefixIcon: Icon(Icons.speed, color: Colors.blueGrey[600]),
+  //     ),
+  //     child: DropdownButtonHideUnderline(
+  //       child: DropdownButton<String>(
+  //         value: _selectedPuissance,
+  //         isExpanded: true,
+  //         style: Theme.of(context).textTheme.bodyLarge,
+  //         dropdownColor: Colors.white,
+  //         icon: Icon(Icons.arrow_drop_down, color: Colors.blueGrey[600]),
+  //         items: puissances
+  //             .map((puissance) => DropdownMenuItem(
+  //                   value: puissance,
+  //                   child: Text(puissance),
+  //                 ))
+  //             .toList(),
+  //         onChanged: (String? newValue) {
+  //           setState(() {
+  //             _selectedPuissance = newValue;
+  //           });
+  //         },
+  //         hint: Text(
+  //           'Sélectionnez une puissance',
+  //           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+  //                 color: Colors.grey[600],
+  //               ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+///////////////////////////////
+  Widget _buildNbrePlaceDropdown() {
+    final places = placesDisponibles;
+
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: 'Nombre de places',
+        labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey[600],
+            ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[400]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.grey[400]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        prefixIcon: Icon(
+          Icons.airline_seat_recline_normal,
+          color: Colors.blueGrey[600],
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: _nbrePlaceController.text.isEmpty
+              ? null
+              : '${_nbrePlaceController.text} places',
+          isExpanded: true,
+          style: Theme.of(context).textTheme.bodyLarge,
+          dropdownColor: Colors.white,
+          icon: Icon(Icons.arrow_drop_down, color: Colors.blueGrey[600]),
+          items: places.map((place) {
+            return DropdownMenuItem<String>(
+              value: place,
+              child: Text(
+                place,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _nbrePlaceController.text =
+                  newValue?.replaceAll(' places', '') ?? '';
+            });
+          },
+          hint: Text(
+            'Sélectionnez le nombre de places',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.grey[600],
+                ),
+          ),
+        ),
+      ),
+    );
+  }
+
+/////////////////////////////////////////////////
   Widget _buildModeleDropdownWithModeles(List<Modele> modeles) {
     return InputDecorator(
       decoration: InputDecoration(
@@ -456,8 +591,15 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
                     child: Text(_mapUsageCode(usage.code)),
                   ))
               .toList(),
-          onChanged: (Usage? usage) {
-            setState(() => _selectedUsage = usage);
+          // onChanged: (Usage? usage) {
+          //   setState(() => _selectedUsage = usage);
+          // },
+          onChanged: (Usage? newValue) {
+            setState(() {
+              _selectedUsage = newValue;
+              _selectedPuissance = null;
+              _nbrePlaceController.clear();
+            });
           },
           hint: Text(
             'Sélectionnez un usage',
@@ -475,11 +617,11 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
       case 'A01':
         return 'Personnel';
       case 'A02':
-        return 'Transport';
+        return 'Transport de marchandises';
       case 'A03':
         return 'Professionnel';
       case 'A04':
-        return 'Autre';
+        return 'Transport en commun';
       default:
         return code;
     }
@@ -597,7 +739,7 @@ class CarRegistrationPageState extends State<CarRegistrationPage> {
         usage: _selectedUsage!.code,
         nbrePlace: int.tryParse(_nbrePlaceController.text) ?? 0,
         typesCouverture: _selectedCouvertures.map((c) => c.type).toList(),
-        duree: _dureeController.text,
+        duree: (int.tryParse(_dureeController.text) ?? 0).toString(),
         puissance: _selectedPuissance ?? '',
         dateDebut: formatDate(dateDebut),
         dateFin: formatDate(dateFin),

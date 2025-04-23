@@ -38,16 +38,39 @@ class Marque {
   }
 }
 
+// class Usage {
+//   final int id;
+//   final String code;
+
+//   Usage({required this.id, required this.code});
+
+//   factory Usage.fromJson(Map<String, dynamic> json) {
+//     return Usage(
+//       id: json['id'],
+//       code: json['code'],
+//     );
+//   }
+// }
+
 class Usage {
   final int id;
   final String code;
+  final List<int> puissances;
+  final List<int> places;
 
-  Usage({required this.id, required this.code});
+  Usage({
+    required this.id,
+    required this.code,
+    required this.puissances,
+    required this.places,
+  });
 
   factory Usage.fromJson(Map<String, dynamic> json) {
     return Usage(
       id: json['id'],
       code: json['code'],
+      puissances: List<int>.from(json['puissances']),
+      places: List<int>.from(json['places']),
     );
   }
 }
@@ -103,18 +126,18 @@ class Modele {
   }
 }
 
-List<String> get puissancesDisponibles => [
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12',
-      '13',
-      '14',
-      '15',
-      '16 et plus'
-    ];
+// List<String> get puissancesDisponibles => [
+//       '4',
+//       '5',
+//       '6',
+//       '7',
+//       '8',
+//       '9',
+//       '10',
+//       '11',
+//       '12',
+//       '13',
+//       '14',
+//       '15',
+//       '16 et plus'
+//     ];

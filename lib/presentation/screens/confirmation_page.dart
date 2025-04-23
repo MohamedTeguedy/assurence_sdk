@@ -20,9 +20,11 @@ class ConfirmationPage extends StatelessWidget {
       case 'A01':
         return 'Personnel';
       case 'A02':
-        return 'Professionnel';
+        return 'Transport de marchandises';
       case 'A03':
-        return 'transport';
+        return 'Professionnel';
+      case 'A04':
+        return 'Transport en commun';
       default:
         return usageCode;
     }
@@ -109,7 +111,7 @@ class ConfirmationPage extends StatelessWidget {
                             _buildInfoRow(Icons.security, 'Types de couverture',
                                 car.typesCouverture.join(', ')),
                             _buildInfoRow(Icons.date_range, 'Durée',
-                                _formatDuree(car.duree)),
+                                _formatDuree(car.duree as String)),
                           ],
                         ),
                       ),
