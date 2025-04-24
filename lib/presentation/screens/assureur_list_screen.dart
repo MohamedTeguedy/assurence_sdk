@@ -1,3 +1,4 @@
+import 'package:assurence_sdk/presentation/screens/car_info_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/assureur_model.dart';
@@ -58,7 +59,8 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
                     onTap: () {
                       Navigator.pushReplacementNamed(
                         context,
-                        AppRoutes.carRegistration,
+                        // AppRoutes.carRegistration,
+                        AppRoutes.carInfo,
                         arguments: assureur,
                       );
                     },

@@ -79,3 +79,22 @@ class VehiculeData {
     );
   }
 }
+
+/// This class represents the response from the API for the duration data.
+class DureeModel {
+  final List<int> durees;
+
+  DureeModel({required this.durees});
+
+  factory DureeModel.fromJson(Map<String, dynamic> json) {
+    return DureeModel(
+      durees: List<int>.from(json['duree']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'duree': durees,
+    };
+  }
+}

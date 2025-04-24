@@ -11,10 +11,12 @@ class ConfirmationPage extends StatelessWidget {
   final Car car;
   final Assureur assureur;
 
-  const ConfirmationPage(
-      {super.key, required this.car, required this.assureur});
+  const ConfirmationPage({
+    super.key,
+    required this.car,
+    required this.assureur,
+  });
 
-  // Méthode pour convertir le code usage en texte explicite
   String _getUsageText(String usageCode) {
     switch (usageCode) {
       case 'A01':
@@ -30,7 +32,6 @@ class ConfirmationPage extends StatelessWidget {
     }
   }
 
-  // Méthode pour formater la durée
   String _formatDuree(String duree) {
     return '$duree mois';
   }
@@ -38,14 +39,13 @@ class ConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CarCubit(),
+      create: (_) => CarCubit(),
       child: Builder(builder: (context) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Confirmer les données'),
+            title: const Text('Confirmation des données'),
             centerTitle: true,
-            elevation: 0,
-            backgroundColor: Colors.blue.shade800,
+            backgroundColor: Colors.indigo,
           ),
           body: BlocListener<CarCubit, CarState>(
             listener: (context, state) {
@@ -53,119 +53,76 @@ class ConfirmationPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DevisPage(devisData: state.response),
+                    builder: (_) => DevisPage(devisData: state.response),
                   ),
                 );
-              }
-              if (state is CarError) {
+              } else if (state is CarError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.message)),
                 );
               }
             },
-            child: Padding(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Informations de la voiture',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            Text('Assureur: ${assureur.nom}',
-                                style: const TextStyle(fontSize: 16)),
-                            const SizedBox(height: 16),
-                            _buildInfoRow(
-                                Icons.confirmation_number, 'VIN', car.vin),
-                            _buildInfoRow(Icons.directions_car, 'Matricule',
-                                car.matricule),
-                            _buildInfoRow(
-                                Icons.branding_watermark, 'Marque', car.marque),
-                            _buildInfoRow(Icons.model_training, 'Modèle',
-                                cleanFrenchText(car.modele)),
-                            _buildInfoRow(Icons.calendar_today, 'Année',
-                                car.annee.toString()),
-                            _buildInfoRow(Icons.person, 'Propriétaire',
-                                car.nomProprietaire),
-                            _buildInfoRow(Icons.assignment, 'Usage',
-                                _getUsageText(car.usage)),
-                            _buildInfoRow(
-                                Icons.speed, 'Puissance', car.puissance),
-                            _buildInfoRow(Icons.airline_seat_recline_normal,
-                                'Nombre de places', car.nbrePlace.toString()),
-                            _buildInfoRow(Icons.security, 'Types de couverture',
-                                car.typesCouverture.join(', ')),
-                            _buildInfoRow(Icons.date_range, 'Durée',
-                                _formatDuree(car.duree as String)),
-                          ],
+              child: Column(
+                children: [
+                  _buildSectionCard(context),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.edit, color: Colors.black87),
+                        label: const Text(
+                          'Corriger',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          side: BorderSide(color: Colors.grey.shade400),
                         ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.shade300,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: const Text(
-                            'Corriger',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        ),
-                        BlocBuilder<CarCubit, CarState>(
-                          builder: (context, state) {
-                            return ElevatedButton(
-                              onPressed: state is CarLoading
-                                  ? null
-                                  : () async {
-                                      await context
-                                          .read<CarCubit>()
-                                          .addCar(car, assureur);
-                                    },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue.shade800,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 24, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: state is CarLoading
-                                  ? const CircularProgressIndicator(
-                                      color: Colors.white)
-                                  : const Text(
-                                      'Valider',
-                                      style: TextStyle(color: Colors.white),
+                      BlocBuilder<CarCubit, CarState>(
+                        builder: (context, state) {
+                          return ElevatedButton.icon(
+                            onPressed: state is CarLoading
+                                ? null
+                                : () {
+                                    context
+                                        .read<CarCubit>()
+                                        .addCar(car, assureur);
+                                  },
+                            icon: state is CarLoading
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
                                     ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                                  )
+                                : const Icon(Icons.check_circle),
+                            label: const Text('Valider'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.indigo,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -174,13 +131,53 @@ class ConfirmationPage extends StatelessWidget {
     );
   }
 
+  Widget _buildSectionCard(BuildContext context) {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Text(
+              'Validation des données',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo,
+                  ),
+            ),
+            const Divider(height: 30),
+            _buildInfoRow(Icons.business, 'Assureur', assureur.nom),
+            _buildInfoRow(Icons.confirmation_number, 'VIN', car.vin),
+            _buildInfoRow(Icons.directions_car, 'Matricule', car.matricule),
+            _buildInfoRow(Icons.branding_watermark, 'Marque', car.marque),
+            _buildInfoRow(
+                Icons.model_training, 'Modèle', cleanFrenchText(car.modele)),
+            _buildInfoRow(Icons.calendar_today, 'Année', car.annee.toString()),
+            _buildInfoRow(Icons.person, 'Propriétaire', car.nomProprietaire),
+            _buildInfoRow(Icons.assignment, 'Usage', _getUsageText(car.usage)),
+            _buildInfoRow(Icons.speed, 'Puissance', car.puissance),
+            _buildInfoRow(Icons.event_seat, 'Places', car.nbrePlace.toString()),
+            _buildInfoRow(
+                Icons.security, 'Couvertures', car.typesCouverture.join(', ')),
+            _buildInfoRow(Icons.date_range, 'Durée', _formatDuree(car.duree)),
+            _buildInfoRow(Icons.calendar_today, 'Début', car.dateDebut),
+            _buildInfoRow(Icons.calendar_today_outlined, 'Fin', car.dateFin),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: Colors.blue.shade800),
-          const SizedBox(width: 16),
+          Icon(icon, color: Colors.indigo),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,15 +185,16 @@ class ConfirmationPage extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 14,
                     color: Colors.grey.shade600,
+                    fontSize: 13,
                   ),
                 ),
+                const SizedBox(height: 2),
                 Text(
                   value,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],

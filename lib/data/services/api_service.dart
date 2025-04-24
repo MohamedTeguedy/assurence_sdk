@@ -77,7 +77,7 @@ class FormDataService {
       'puissance': car.puissance,
       'nbre_place': car.nbrePlace,
       'types_couverture': car.typesCouverture,
-      'durée': car.duree,
+      'duree': car.duree,
       'date_debut': car.dateDebut,
       'date_fin': car.dateFin
     };

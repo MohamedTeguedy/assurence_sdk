@@ -48,3 +48,19 @@ class CarError extends CarState {
 
   CarError(this.message);
 }
+
+class DureeInitial extends CarState {}
+
+class DureeLoading extends CarState {}
+
+class DureeLoaded extends CarState {
+  final List<int> durees;
+
+  DureeLoaded({required this.durees});
+}
+
+class DureeError extends CarState {
+  final String message;
+
+  DureeError({required this.message});
+}
