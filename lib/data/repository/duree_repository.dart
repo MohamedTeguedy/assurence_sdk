@@ -1,8 +1,10 @@
 import '../../domain/entities/duree_entity.dart';
-import '../services/duree_service.dart';
+import '../services/api_service.dart';
+// import '../services/duree_service.dart';
 
 class DureeRepository {
-  final DureeService service = DureeService();
+  // final DureeService service = DureeService();
+  final FormDataService service = FormDataService();
 
   Future<DureeEntity> getDurees({
     required String keyEntreprise,

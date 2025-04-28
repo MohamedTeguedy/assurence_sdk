@@ -10,7 +10,7 @@ class AssureurService {
         nom: 'mar',
         description: "La Mauritanienne d'Assurances et de Réassurances",
         imageUrl:
-            'https://mar.mr/wp-content/uploads/2023/04/cropped-logo-mar.png', // Remplacez par une URL réelle
+            'https://logodix.com/logo/1931259.png', // Remplacez par une URL réelle
       ),
       Assureur(
         id: 2,

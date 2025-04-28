@@ -1,4 +1,3 @@
-import 'package:assurence_sdk/presentation/screens/car_info_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/assureur_model.dart';
@@ -26,10 +25,9 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
 
   Future<void> _loadAssureurs() async {
     final assureurs = await _assureurService.getAssureurs();
-    setState(() {
-      _assureurs = assureurs;
-      _isLoading = false;
-    });
+    setState(() {});
+    _assureurs = assureurs;
+    _isLoading = false;
   }
 
   @override

@@ -45,7 +45,7 @@ class ConfirmationPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Confirmation des données'),
             centerTitle: true,
-            backgroundColor: Colors.indigo,
+            backgroundColor: Colors.blue.shade800,
           ),
           body: BlocListener<CarCubit, CarState>(
             listener: (context, state) {
@@ -176,7 +176,7 @@ class ConfirmationPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: Colors.indigo),
+          Icon(icon, color: Color.fromARGB(255, 24, 99, 237)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
