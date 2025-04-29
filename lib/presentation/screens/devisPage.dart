@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../route.dart';
+import '../components/custom_app_bar.dart';
 // import '../../presentation/customs/intl_0.18.1/intl.dart';
 
 class DevisPage extends StatelessWidget {
@@ -12,9 +15,10 @@ class DevisPage extends StatelessWidget {
     final formatter = NumberFormat.currency(locale: 'fr_MR', symbol: 'MRU');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Votre Devis d\'Assurance'),
-        centerTitle: true,
+      appBar: CustomAppBar(
+        title: 'Votre Devis d\'Assurance',
+        showBackButton: true,
+        onBackPressed: () => Navigator.pop(context),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

@@ -1,5 +1,3 @@
-// import 'package:assurence_sdk/presentation/customs/http_0.13.6/http.dart';
-
 import '../models/car_model.dart';
 
 import '../services/api_service.dart';

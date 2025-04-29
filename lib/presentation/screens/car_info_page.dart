@@ -7,6 +7,7 @@ import '../../data/models/form_data_model.dart';
 import '../../route.dart';
 import '../../utils/duration_selection_arguments.dart';
 import '../../utils/text_utils.dart';
+import '../components/custom_app_bar.dart';
 
 class CarInfoPage extends StatefulWidget {
   const CarInfoPage({super.key, required this.assureur});
@@ -61,21 +62,31 @@ class CarInfoPageState extends State<CarInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Informations du Véhicule et Couvertures',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () =>
-              Navigator.pushReplacementNamed(context, AppRoutes.listAssureur),
-        ),
-        elevation: 0,
-        centerTitle: true,
+      // appBar: AppBar(
+      //   title: const Text(
+      //     'Informations du Véhicule et Couvertures',
+      //     style: TextStyle(
+      //         fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.blue.shade800,
+      //   elevation: 0,
+      //   shape: const RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.vertical(
+      //       bottom: Radius.circular(15),
+      //     ),
+      //   ),
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back),
+      //     onPressed: () =>
+      //         Navigator.pushReplacementNamed(context, AppRoutes.listAssureur),
+      //   ),
+      // ),
+      appBar: CustomAppBar(
+        title: 'Informations du Véhicule et Couvertures',
+        showBackButton: true,
+        onBackPressed: () =>
+            Navigator.pushReplacementNamed(context, AppRoutes.listAssureur),
       ),
       body: BlocConsumer<CarCubit, CarState>(
         listener: (context, state) {
@@ -157,7 +168,17 @@ class CarInfoPageState extends State<CarInfoPage> {
               child: ElevatedButton(
                 onPressed: _validateAndNavigate,
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.blue.shade800,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 child: const Text('SUIVANT'),
               ),
@@ -168,7 +189,6 @@ class CarInfoPageState extends State<CarInfoPage> {
     );
   }
 
-  // ... (Tous les autres méthodes _buildTextField, _buildMarqueDropdown, etc. restent identiques)
   Widget _buildTextField(
       String label, TextEditingController controller, IconData icon,
       {TextInputType? keyboardType}) {
@@ -393,7 +413,6 @@ class CarInfoPageState extends State<CarInfoPage> {
     );
   }
 
-/////////////////////////////////////////////////
   Widget _buildModeleDropdownWithModeles(List<Modele> modeles) {
     return InputDecorator(
       decoration: InputDecoration(
@@ -561,11 +580,8 @@ class CarInfoPageState extends State<CarInfoPage> {
     );
   }
 
-  // Seule la méthode _validateAndNavigate change :
-
   void _validateAndNavigate() {
     if (_formKey.currentState!.validate()) {
-      // Vérifier que tous les champs obligatoires sont remplis
       if (_selectedMarque == null ||
           _selectedModele == null ||
           _selectedUsage == null) {

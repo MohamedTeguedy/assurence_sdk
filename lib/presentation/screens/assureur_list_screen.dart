@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
+// }
 
+import 'package:flutter/material.dart';
 import '../../data/models/assureur_model.dart';
 import '../../data/services/assureur_service.dart';
 import '../../route.dart';
+import '../components/custom_app_bar.dart';
 
 class AssureurListScreen extends StatefulWidget {
   const AssureurListScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AssureurListScreenState createState() => _AssureurListScreenState();
 }
 
@@ -25,19 +26,49 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
 
   Future<void> _loadAssureurs() async {
     final assureurs = await _assureurService.getAssureurs();
-    setState(() {});
-    _assureurs = assureurs;
-    _isLoading = false;
+    setState(() {
+      _assureurs = assureurs;
+      _isLoading = false;
+    });
+  }
+
+  Widget _buildAssureurImage(String imageUrl) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        imageUrl,
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 50,
+            height: 50,
+            color: Colors.grey.shade200,
+            child: const Icon(Icons.business, color: Colors.grey),
+          );
+        },
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: 50,
+            height: 50,
+            color: Colors.grey.shade200,
+            child:
+                const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Choisir un Assureur'),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.blue.shade800,
+      appBar: CustomAppBar(
+        title: 'Choisir un Assureur',
+        onBackPressed: () =>
+            Navigator.pushReplacementNamed(context, AppRoutes.home),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -57,7 +88,6 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
                     onTap: () {
                       Navigator.pushReplacementNamed(
                         context,
-                        // AppRoutes.carRegistration,
                         AppRoutes.carInfo,
                         arguments: assureur,
                       );
@@ -66,18 +96,8 @@ class _AssureurListScreenState extends State<AssureurListScreen> {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          // Logo de l'assureur
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              assureur.imageUrl,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                          _buildAssureurImage(assureur.imageUrl),
                           const SizedBox(width: 16),
-                          // Informations de l'assureur
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

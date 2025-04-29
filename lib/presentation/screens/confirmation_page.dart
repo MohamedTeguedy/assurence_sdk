@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../business_logic/cubits/car_cubit.dart';
 import '../../data/models/assureur_model.dart';
 
+import '../../route.dart';
 import '../../utils/text_utils.dart';
+import '../components/custom_app_bar.dart';
 import 'devisPage.dart';
 
 class ConfirmationPage extends StatelessWidget {
@@ -21,9 +23,9 @@ class ConfirmationPage extends StatelessWidget {
     switch (usageCode) {
       case 'A01':
         return 'Personnel';
-      case 'A02':
-        return 'Transport de marchandises';
       case 'A03':
+        return 'Transport de marchandises';
+      case 'A02':
         return 'Professionnel';
       case 'A04':
         return 'Transport en commun';
@@ -42,10 +44,10 @@ class ConfirmationPage extends StatelessWidget {
       create: (_) => CarCubit(),
       child: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Confirmation des données'),
-            centerTitle: true,
-            backgroundColor: Colors.blue.shade800,
+          appBar: CustomAppBar(
+            title: 'Confirmation des données',
+            showBackButton: true,
+            onBackPressed: () => Navigator.pop(context),
           ),
           body: BlocListener<CarCubit, CarState>(
             listener: (context, state) {
