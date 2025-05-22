@@ -7,15 +7,15 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  bloc: ^9.0.0
+  # bloc: ^9.0.0
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.0
+  # flutter_bloc: ^9.1.0
 
   # intl: ^0.18.1
   intl:
     path: ./intel_0.18.1
-  sqflite: ^2.2.8+4
+  # sqflite: ^2.2.8+4
   # http: ^0.13.6
   # http:
   #   path: ./http_0.13.6
