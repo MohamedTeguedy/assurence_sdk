@@ -17,11 +17,12 @@ class AssurenceSdk {
       customBaseUrl: baseUrl,
     );
 
-    // Vous pourriez aussi initialiser d'autres services ici
+    //  initialiser d'autres services ici
   }
 
   static Widget getSdkWidget() {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Enregistrement de Voiture',
       theme: ThemeData(
         primarySwatch: Colors.blue,

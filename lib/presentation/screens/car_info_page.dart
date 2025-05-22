@@ -62,26 +62,6 @@ class CarInfoPageState extends State<CarInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text(
-      //     'Informations du Véhicule et Couvertures',
-      //     style: TextStyle(
-      //         fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
-      //   ),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.blue.shade800,
-      //   elevation: 0,
-      //   shape: const RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.vertical(
-      //       bottom: Radius.circular(15),
-      //     ),
-      //   ),
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back),
-      //     onPressed: () =>
-      //         Navigator.pushReplacementNamed(context, AppRoutes.listAssureur),
-      //   ),
-      // ),
       appBar: CustomAppBar(
         title: 'Informations du Véhicule et Couvertures',
         showBackButton: true,
@@ -541,40 +521,125 @@ class CarInfoPageState extends State<CarInfoPage> {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          children: _allCouvertures
-              .map((couverture) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(
-                      cleanFrenchText(couverture.typeDisplay),
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    subtitle: Text(
-                      cleanFrenchText(couverture.description),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
+          children: _allCouvertures.map((couverture) {
+            final isSelected = _selectedCouvertures.contains(couverture);
+            final isMandatory = couverture.type == 'RESPONSABILITE_CIVILE';
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.blue.shade50 : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color:
+                      isSelected ? Colors.blue.shade100 : Colors.grey.shade200,
+                  width: 1.5,
+                ),
+              ),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: isMandatory
+                    ? null
+                    : () {
+                        setState(() {
+                          if (isSelected) {
+                            _selectedCouvertures.remove(couverture);
+                          } else {
+                            _selectedCouvertures.add(couverture);
+                          }
+                        });
+                      },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    children: [
+                      // Checkbox moderne avec effet
+                      Container(
+                        width: 24,
+                        height: 24,
+                        margin: const EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                          color: isMandatory
+                              ? Colors.blue.shade800.withOpacity(0.2)
+                              : isSelected
+                                  ? Colors.blue.shade800
+                                  : Colors.white,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: isMandatory
+                                ? Colors.blue.shade800
+                                : isSelected
+                                    ? Colors.blue.shade800
+                                    : Colors.grey.shade400,
+                            width: 1.5,
                           ),
-                    ),
-                    value: _selectedCouvertures.contains(couverture),
-                    onChanged: couverture.type == 'RESPONSABILITE_CIVILE'
-                        ? null
-                        : (bool? selected) {
-                            setState(() {
-                              if (selected == true) {
-                                _selectedCouvertures.add(couverture);
-                              } else {
-                                _selectedCouvertures.remove(couverture);
-                              }
-                            });
-                          },
-                    activeColor: Theme.of(context).primaryColor,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  ))
-              .toList(),
+                        ),
+                        child: isSelected || isMandatory
+                            ? Icon(
+                                Icons.check,
+                                size: 18,
+                                color: isMandatory
+                                    ? Colors.blue.shade800
+                                    : Colors.white,
+                              )
+                            : null,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  cleanFrenchText(couverture.typeDisplay),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: isMandatory
+                                            ? Colors.blue.shade800
+                                            : Colors.grey.shade800,
+                                      ),
+                                ),
+                                if (isMandatory)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Text(
+                                      '(Obligatoire)',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              cleanFrenchText(couverture.description),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Colors.grey.shade600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../business_logic/cubits/car_cubit.dart';
 import '../../data/models/assureur_model.dart';
 
-import '../../route.dart';
 import '../../utils/text_utils.dart';
 import '../components/custom_app_bar.dart';
-import 'devisPage.dart';
+import 'devis_page.dart';
 
 class ConfirmationPage extends StatelessWidget {
   final Car car;
@@ -64,68 +63,74 @@ class ConfirmationPage extends StatelessWidget {
                 );
               }
             },
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  _buildSectionCard(context),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double padding = constraints.maxWidth > 600 ? 32.0 : 16.0;
+                return SingleChildScrollView(
+                  padding: EdgeInsets.all(padding),
+                  child: Column(
                     children: [
-                      OutlinedButton.icon(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.edit, color: Colors.black87),
-                        label: const Text(
-                          'Corriger',
-                          style: TextStyle(color: Colors.black87),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          side: BorderSide(color: Colors.grey.shade400),
-                        ),
-                      ),
-                      BlocBuilder<CarCubit, CarState>(
-                        builder: (context, state) {
-                          return ElevatedButton.icon(
-                            onPressed: state is CarLoading
-                                ? null
-                                : () {
-                                    context
-                                        .read<CarCubit>()
-                                        .addCar(car, assureur);
-                                  },
-                            icon: state is CarLoading
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Icon(Icons.check_circle),
-                            label: const Text('Valider'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.indigo,
+                      _buildSectionCard(context),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.edit, color: Colors.black87),
+                            label: const Text(
+                              'Corriger',
+                              style: TextStyle(color: Colors.black87),
+                            ),
+                            style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 14),
+                                  horizontal: 20, vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              textStyle: const TextStyle(fontSize: 16),
+                              side: BorderSide(color: Colors.grey.shade400),
                             ),
-                          );
-                        },
+                          ),
+                          BlocBuilder<CarCubit, CarState>(
+                            builder: (context, state) {
+                              return ElevatedButton.icon(
+                                onPressed: state is CarLoading
+                                    ? null
+                                    : () {
+                                        context
+                                            .read<CarCubit>()
+                                            .addCar(car, assureur);
+                                      },
+                                icon: state is CarLoading
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(Icons.check_circle),
+                                label: const Text('Valider'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue.shade800,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 14),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  textStyle: const TextStyle(fontSize: 16),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         );
@@ -178,7 +183,7 @@ class ConfirmationPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: Color.fromARGB(255, 24, 99, 237)),
+          Icon(icon, color: const Color.fromARGB(255, 46, 118, 252)),
           const SizedBox(width: 12),
           Expanded(
             child: Column(

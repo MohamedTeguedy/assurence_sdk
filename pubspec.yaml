@@ -2,7 +2,6 @@ name: assurence_sdk
 description: A new Flutter package project.
 version: 0.0.1
 homepage:
-
 environment:
   sdk: ">=2.19.0 <3.0.0"
   flutter: ">=1.17.0"
@@ -12,10 +11,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
-  http: ^0.13.6
-  intl: ^0.18.1
-  sqflite: ^2.2.8+4
 
+  # intl: ^0.18.1
+  intl:
+    path: ./intel_0.18.1
+  sqflite: ^2.2.8+4
+  # http: ^0.13.6
+  # http:
+  #   path: ./http_0.13.6
 dev_dependencies:
   flutter_test:
     sdk: flutter
